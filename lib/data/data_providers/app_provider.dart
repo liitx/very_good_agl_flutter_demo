@@ -12,7 +12,7 @@ import 'package:flutter_ics_homescreen/data/data_providers/playlist_notifier.dar
 import 'package:flutter_ics_homescreen/data/data_providers/playlist_art_notifier.dart';
 import 'package:flutter_ics_homescreen/data/data_providers/val_client.dart';
 import 'package:flutter_ics_homescreen/data/data_providers/app_launcher.dart';
-import 'package:flutter_ics_homescreen/data/data_providers/radio_client.dart';
+import 'package:flutter_ics_homescreen/data/data_providers/radio_client.dart' as radioApi;
 import 'package:flutter_ics_homescreen/data/data_providers/storage_client.dart';
 import 'package:flutter_ics_homescreen/data/data_providers/storage_client_notifier.dart';
 import 'package:flutter_ics_homescreen/data/data_providers/mpd_client.dart';
@@ -95,7 +95,7 @@ final appLauncherListProvider =
 
 final radioClientProvider = Provider((ref) {
   RadioConfig config = ref.watch(appConfigProvider).radioConfig;
-  return RadioClient(config: config, ref: ref);
+  return radioApi.RadioClient(config: config, ref: ref);
 });
 
 
