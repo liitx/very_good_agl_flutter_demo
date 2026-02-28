@@ -1,23 +1,17 @@
 import '../../../../export.dart';
 
-class TemperatureWidget extends ConsumerWidget {
-  const TemperatureWidget({super.key});
+class TemperatureRowWidget extends ConsumerWidget {
+  const TemperatureRowWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final temperature = ref.watch(vehicleProvider.select((vehicle) => vehicle));
-    // final outsideTemperature = ref
-    //     .watch(vehicleProvider.select((vehicle) => vehicle.outsideTemperature));
-    final tempUnit =
-        ref.watch(unitStateProvider.select((unit) => unit.temperatureUnit));
-
-    TextStyle temperatureTextStyle = const TextStyle(
+    const TextStyle temperatureTextStyle = const TextStyle(
       fontFamily: 'BrunoAce',
       color: Colors.white,
       fontSize: 44,
     );
 
-    TextStyle unitTextStyle = const TextStyle(
+    const TextStyle unitTextStyle = const TextStyle(
       fontFamily: 'BrunoAce',
       color: Color(0xFFC1D8FF),
       fontSize: 38,
@@ -25,7 +19,7 @@ class TemperatureWidget extends ConsumerWidget {
 
     return Container(
       width:
-          442, // needs to be adjusted after the celsius and farenheight symbols are fixed
+          442, // needs to be adjusted after the celsius and fahrenheit symbols are fixed
       height: 130, // Height of the oval
       //padding: const EdgeInsets.all(10),
       decoration: ShapeDecoration(
@@ -47,54 +41,61 @@ class TemperatureWidget extends ConsumerWidget {
           ),
         ),
       ),
-      child: Row(
+      child: const Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Inside temperature
-          buildTemperatureRow(
-            context,
-            Icons.thermostat_outlined,
-            "Inside",
-            temperature.insideTemperature,
-            tempUnit,
-            temperatureTextStyle,
-            unitTextStyle,
-            false,
+          TemperatureWidget(
+            tempStyle: temperatureTextStyle,
+            unitStyle: unitTextStyle,
+            isOutside: false,
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10),
           // Outside temperature
-          buildTemperatureRow(
-            context,
-            Icons.thermostat_outlined,
-            "Outside",
-            temperature.outsideTemperature,
-            tempUnit,
-            temperatureTextStyle,
-            unitTextStyle,
-            true,
+          TemperatureWidget(
+            tempStyle: temperatureTextStyle,
+            unitStyle: unitTextStyle,
+            isOutside: true,
           ),
         ],
       ),
     );
   }
+}
 
-  Widget buildTemperatureRow(
-    BuildContext context,
-    IconData icon,
-    String label,
-    double temperatureValue,
-    TemperatureUnit tempUnit,
-    TextStyle tempTextStyle,
-    TextStyle unitTextStyle,
-    bool isOutside,
-  ) {
-    int temperatureAsInt = temperatureValue.toInt();
-    double convertedTemperature = tempUnit == TemperatureUnit.celsius
+class TemperatureWidget extends ConsumerWidget {
+  const TemperatureWidget(
+      {super.key,
+      required this.tempStyle,
+      required this.unitStyle,
+      required this.isOutside});
+
+  final TextStyle tempStyle;
+  final TextStyle unitStyle;
+  final bool isOutside;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    double value = 0;
+    String label = "Outside";
+    if (isOutside) {
+      value = ref.watch(
+          vehicleProvider.select((vehicle) => vehicle.outsideTemperature));
+    } else {
+      value = ref.watch(
+          vehicleProvider.select((vehicle) => vehicle.insideTemperature));
+      label = "Inside";
+    }
+    final unit =
+        ref.watch(unitStateProvider.select((unit) => unit.temperatureUnit));
+
+    int temperatureAsInt = value.toInt();
+    double convertedTemperature = unit == TemperatureUnit.celsius
         ? temperatureAsInt.toDouble()
         : (temperatureAsInt * 9 / 5) + 32;
 
     // Format the temperature for display.
-    String temperatureDisplay = tempUnit == TemperatureUnit.celsius
+    String temperatureDisplay = unit == TemperatureUnit.celsius
         ? '$temperatureAsInt'
         : convertedTemperature.toStringAsFixed(0);
 
@@ -107,8 +108,8 @@ class TemperatureWidget extends ConsumerWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
+          const Icon(
+            Icons.thermostat_outlined,
             color: const Color(0xFF2962FF),
             size: 48,
           ),
@@ -127,11 +128,11 @@ class TemperatureWidget extends ConsumerWidget {
               RichText(
                 text: TextSpan(
                   text: temperatureDisplay,
-                  style: tempTextStyle,
+                  style: tempStyle,
                   children: <TextSpan>[
                     TextSpan(
-                      text: tempUnit == TemperatureUnit.celsius ? '°C' : '°F',
-                      style: unitTextStyle,
+                      text: unit == TemperatureUnit.celsius ? '°C' : '°F',
+                      style: unitStyle,
                     ),
                   ],
                 ),

@@ -1,6 +1,24 @@
 import 'package:flutter_ics_homescreen/export.dart';
 
-class GenericButton extends StatefulWidget {
+class TapStateNotifier extends Notifier<bool> {
+  @override
+  bool build() {
+    return false;
+  }
+
+  void down() {
+    state = true;
+  }
+
+  void up() {
+    state = false;
+  }
+}
+
+final tapStateProvider =
+    NotifierProvider<TapStateNotifier, bool>(TapStateNotifier.new);
+
+class GenericButton extends ConsumerStatefulWidget {
   final double height;
   final double width;
   final String text;
@@ -15,45 +33,39 @@ class GenericButton extends StatefulWidget {
   });
 
   @override
-  State<GenericButton> createState() => _GenericButtonState();
+  ConsumerState<GenericButton> createState() => _GenericButtonState();
 }
 
-class _GenericButtonState extends State<GenericButton> {
-  LinearGradient gradientEnable1 = const LinearGradient(colors: <Color>[
-    Color(0xFF2962FF),
-    Color(0x802962FF),
-  ]);
-  LinearGradient gradientEnable2 = const LinearGradient(colors: <Color>[
-    Color(0xFF1A237E),
-    Color(0xFF141F64),
-  ]);
+class _GenericButtonState extends ConsumerState<GenericButton> {
   @override
   Widget build(BuildContext context) {
+    LinearGradient gradientEnable1 = const LinearGradient(colors: <Color>[
+      Color(0xFF2962FF),
+      Color(0x802962FF),
+    ]);
+    LinearGradient gradientEnable2 = const LinearGradient(colors: <Color>[
+      Color(0xFF1A237E),
+      Color(0xFF141F64),
+    ]);
+    final bool tapped = ref.watch(tapStateProvider);
+    if (tapped) {
+      gradientEnable1 = const LinearGradient(colors: <Color>[
+        Color(0x802962FF),
+        Color(0xFF2962FF),
+      ]);
+      gradientEnable2 = const LinearGradient(colors: <Color>[
+        Color(0xFF1A237E),
+        Color(0xFF1C2D92),
+      ]);
+    }
+
     return GestureDetector(
       onTapDown: (details) {
-        setState(() {
-          gradientEnable1 = const LinearGradient(colors: <Color>[
-            Color(0x802962FF),
-            Color(0xFF2962FF),
-          ]);
-          gradientEnable2 = const LinearGradient(colors: <Color>[
-            Color(0xFF1A237E),
-            Color(0xFF1C2D92),
-          ]);
-        });
+        ref.read(tapStateProvider.notifier).down();
         //change style
       },
       onTapUp: (details) {
-        setState(() {
-          gradientEnable1 = const LinearGradient(colors: <Color>[
-            Color(0xFF2962FF),
-            Color(0x802962FF),
-          ]);
-          gradientEnable2 = const LinearGradient(colors: <Color>[
-            Color(0xFF1A237E),
-            Color(0xFF141F64),
-          ]);
-        });
+        ref.read(tapStateProvider.notifier).up();
         widget.onTap();
       },
       child: Container(

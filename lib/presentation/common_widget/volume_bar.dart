@@ -10,37 +10,31 @@ class VolumeBar extends ConsumerStatefulWidget {
 }
 
 class VolumeBarState extends ConsumerState<VolumeBar> {
-  double val = 0;
   @override
   void initState() {
     super.initState();
   }
 
   void increaseVolume() {
+    double val = ref.read(audioStateProvider).volume;
     val += 10;
     if (val > 100) {
       val = 100;
     }
-    setState(() {
-      ref.read(audioStateProvider.notifier).setVolume(val);
-    });
+    ref.read(audioStateProvider.notifier).setVolume(val);
   }
 
   void decreaseVolume() {
+    double val = ref.read(audioStateProvider).volume;
     val -= 10;
     if (val < 0) {
       val = 0;
     }
-    setState(() {
-      ref.read(audioStateProvider.notifier).setVolume(val);
-    });
+    ref.read(audioStateProvider.notifier).setVolume(val);
   }
 
-  void setVolume(double newWalue) {
-    setState(() {
-      val = newWalue;
-      ref.read(audioStateProvider.notifier).setVolume(val);
-    });
+  void setVolume(double value) {
+    ref.read(audioStateProvider.notifier).setVolume(value);
   }
 
   void play() {
@@ -55,7 +49,6 @@ class VolumeBarState extends ConsumerState<VolumeBar> {
   Widget build(BuildContext context) {
     final volumeValue =
         ref.watch(audioStateProvider.select((audio) => audio.volume));
-    val = volumeValue.toDouble();
     final isPlaying = ref.watch(playStateProvider);
 
     return Column(

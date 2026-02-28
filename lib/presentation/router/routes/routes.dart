@@ -12,9 +12,9 @@ List<Page<dynamic>> onGenerateAppViewPages(
 ) {
   switch (state) {
     case AppState.home:
-      return [DasboardPage.page()];
+      return [DashboardPage.page()];
     case AppState.dashboard:
-      return [DasboardPage.page()];
+      return [DashboardPage.page()];
     case AppState.hvac:
       return [HvacPage.page()];
     case AppState.apps:

@@ -3,39 +3,11 @@ import 'package:flutter_ics_homescreen/export.dart';
 
 import 'custom_circle.dart';
 
-class RPMProgressIndicator extends ConsumerStatefulWidget {
+class RPMProgressIndicator extends ConsumerWidget {
   const RPMProgressIndicator({super.key});
 
   @override
-  RPMProgressIndicatorState createState() => RPMProgressIndicatorState();
-}
-
-class RPMProgressIndicatorState extends ConsumerState<RPMProgressIndicator>
-    with TickerProviderStateMixin {
-  late AnimationController controller;
-
-  @override
-  void initState() {
-    controller = AnimationController(
-      /// [AnimationController]s can be created with `vsync: this` because of
-      /// [TickerProviderStateMixin].
-      vsync: this,
-      duration: const Duration(seconds: 5),
-    )..addListener(() {
-        //setState(() {});
-      });
-    controller.repeat(reverse: true);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final rpm =
         ref.watch(vehicleProvider.select((vehicle) => vehicle.engineSpeed));
     return Column(
@@ -109,39 +81,11 @@ class RPMProgressIndicatorState extends ConsumerState<RPMProgressIndicator>
   }
 }
 
-class SpeedProgressIndicator extends ConsumerStatefulWidget {
+class SpeedProgressIndicator extends ConsumerWidget {
   const SpeedProgressIndicator({super.key});
 
   @override
-  SpeedProgressIndicatorState createState() => SpeedProgressIndicatorState();
-}
-
-class SpeedProgressIndicatorState extends ConsumerState<SpeedProgressIndicator>
-    with TickerProviderStateMixin {
-  late AnimationController controller;
-
-  @override
-  void initState() {
-    controller = AnimationController(
-      /// [AnimationController]s can be created with `vsync: this` because of
-      /// [TickerProviderStateMixin].
-      vsync: this,
-      duration: const Duration(seconds: 5),
-    )..addListener(() {
-        //setState(() {});
-      });
-    controller.repeat(reverse: true);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final speed = ref.watch(vehicleProvider.select((vehicle) => vehicle.speed));
     final unit =
         ref.watch(unitStateProvider.select((unit) => unit.distanceUnit));
@@ -200,39 +144,11 @@ class SpeedProgressIndicatorState extends ConsumerState<SpeedProgressIndicator>
   }
 }
 
-class FuelProgressIndicator extends ConsumerStatefulWidget {
+class FuelProgressIndicator extends ConsumerWidget {
   const FuelProgressIndicator({super.key});
 
   @override
-  FuelProgressIndicatorState createState() => FuelProgressIndicatorState();
-}
-
-class FuelProgressIndicatorState extends ConsumerState<FuelProgressIndicator>
-    with TickerProviderStateMixin {
-  late AnimationController controller;
-
-  @override
-  void initState() {
-    controller = AnimationController(
-      /// [AnimationController]s can be created with `vsync: this` because of
-      /// [TickerProviderStateMixin].
-      vsync: this,
-      duration: const Duration(seconds: 5),
-    )..addListener(() {
-        //setState(() {});
-      });
-    controller.repeat(reverse: true);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final fuelLevel =
         ref.watch(vehicleProvider.select((vehicle) => vehicle.fuelLevel));
     return Column(

@@ -18,7 +18,6 @@ class _PlayerNavigationState extends ConsumerState<PlayerNavigation> {
     MediaNavState.am: "AM",
     MediaNavState.xm: "XM"
   };
-  //String selectedNav = "My Media";
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +44,6 @@ class _PlayerNavigationState extends ConsumerState<PlayerNavigation> {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
-                        setState(() {
-                          if (e == "My Media" || e == "FM") {
-                            selectedNav = e;
-                          }
-                        });
                         if (e == "My Media" || e == "FM") {
                           for (MapEntry<MediaNavState, String> me
                               in navStateMap.entries) {

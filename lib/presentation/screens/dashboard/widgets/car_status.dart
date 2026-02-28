@@ -4,6 +4,15 @@ import 'package:gradient_borders/gradient_borders.dart';
 
 import '../../../../export.dart';
 
+final carImageProvider = Provider((ref) {
+  return SvgPicture.asset(
+    'assets/Car Illustration.svg',
+    width: 625,
+    height: 440,
+    fit: BoxFit.fitHeight,
+  );
+});
+
 class CarStatus extends ConsumerWidget {
   const CarStatus({super.key});
 
@@ -21,12 +30,7 @@ class CarStatus extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.symmetric(
                   horizontal: 47.0), // Adding horizontal padding
-              child: SvgPicture.asset(
-                'assets/Car Illustration.svg',
-                width: 625,
-                height: 440,
-                fit: BoxFit.fitHeight,
-              ),
+              child: ref.read(carImageProvider),
             ),
             const RightCarStatus(),
           ],
@@ -37,9 +41,7 @@ class CarStatus extends ConsumerWidget {
 }
 
 class LeftCarStatus extends ConsumerWidget {
-  const LeftCarStatus({
-    super.key,
-  });
+  const LeftCarStatus({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -115,9 +117,7 @@ class LeftCarStatus extends ConsumerWidget {
 }
 
 class RightCarStatus extends ConsumerWidget {
-  const RightCarStatus({
-    super.key,
-  });
+  const RightCarStatus({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

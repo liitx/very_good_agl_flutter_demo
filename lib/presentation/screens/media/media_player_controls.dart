@@ -1,3 +1,4 @@
+import 'package:dart_mpd/dart_mpd.dart';
 import 'package:flutter_ics_homescreen/core/utils/helpers.dart';
 import 'package:flutter_ics_homescreen/export.dart';
 import 'package:flutter_ics_homescreen/presentation/screens/settings/settings_screens/audio_settings/widget/slider_widgets.dart';
@@ -22,27 +23,19 @@ class MediaPlayerControls extends ConsumerStatefulWidget {
 }
 
 class _MediaPlayerControlsState extends ConsumerState<MediaPlayerControls> {
-  //@override
-  //void initState() {
-  //  super.initState();
-  //}
-
   @override
   Widget build(BuildContext context) {
     var currentSong = ref.watch(
         mediaPlayerStateProvider.select((mediaplayer) => mediaplayer.song));
-    var songPosition = ref.watch(mediaPlayerPositionProvider);
 
     String songName = "";
     String songDetail = "";
-    String songPositionString = "00:00";
-    String songLengthString = "00:00";
+    Duration songLength = Duration.zero;
     if (currentSong != null) {
       songName = currentSong.title;
       songDetail = currentSong.artist;
-      songLengthString = timeToString(currentSong.duration);
+      songLength = currentSong.duration;
     }
-    songPositionString = timeToString(songPosition);
 
     return Material(
       color: Colors.transparent,
@@ -55,34 +48,8 @@ class _MediaPlayerControlsState extends ConsumerState<MediaPlayerControls> {
               shadows: [Helpers.dropShadowRegular],
               fontSize: 44),
         ),
-        MediaPlayerControlsDetails(
-          songDetail: songDetail,
-        ),
-        Column(children: [
-          const MediaPlayerControlsSlider(),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  songPositionString,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 26,
-                      shadows: [Helpers.dropShadowRegular]),
-                ),
-                Text(
-                  songLengthString,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 26,
-                      shadows: [Helpers.dropShadowRegular]),
-                )
-              ],
-            ),
-          ),
-        ]),
+        MediaPlayerControlsDetails(songDetail: songDetail),
+        MediaPlayerControlsSlider(songLength: songLength),
         const MediaPlayerControlsActions(),
       ]),
     );
@@ -155,69 +122,84 @@ class _MediaPlayerControlsDetailsState
   }
 }
 
-class MediaPlayerControlsSlider extends ConsumerStatefulWidget {
-  const MediaPlayerControlsSlider({super.key});
+class MediaPlayerControlsSlider extends ConsumerWidget {
+  const MediaPlayerControlsSlider({super.key, required this.songLength});
+
+  final Duration songLength;
 
   @override
-  ConsumerState<MediaPlayerControlsSlider> createState() =>
-      MediaPlayerControlsSliderState();
-}
-
-class MediaPlayerControlsSliderState
-    extends ConsumerState<MediaPlayerControlsSlider> {
-  //late Duration songPosition;
-
-  //@override
-  //void initState() {
-  //  songPosition = ref.read(mediaPlayerPositionProvider);
-  //  super.initState();
-  //}
-
-  @override
-  Widget build(BuildContext context) {
-    var currentSong = ref.watch(
-        mediaPlayerStateProvider.select((mediaplayer) => mediaplayer.song));
+  Widget build(BuildContext context, WidgetRef ref) {
     var songPosition = ref.watch(mediaPlayerPositionProvider);
 
-    Duration songLength = Duration.zero;
-    if (currentSong != null) {
-      songLength = currentSong.duration;
+    if (songLength == Duration.zero) {
+      songPosition = Duration.zero;
     }
+    String songLengthString = timeToString(songLength);
+    String songPositionString = timeToString(songPosition);
 
-    return SizedBox(
-      height: 80,
-      child: SliderTheme(
-        data: SliderThemeData(
-          overlayShape: SliderComponentShape.noOverlay,
-          valueIndicatorShape: SliderComponentShape.noOverlay,
-          activeTickMarkColor: Colors.transparent,
-          inactiveTickMarkColor: Colors.transparent,
-          inactiveTrackColor: AGLDemoColors.periwinkleColor,
-          thumbShape: const PolygonSliderThumb(sliderValue: 3, thumbRadius: 23),
-          //trackHeight: 5,
-        ),
-        child: Slider(
-          max: songLength.inMilliseconds.toDouble(),
-          value: songPosition.inMilliseconds.toDouble(),
-          onChangeStart: (double value) {
-            // Disable timer so position will not change while control is
-            // being dragged.  It will be re-enabled via the playback state
-            // update from MPD.
-            ref.read(mediaPlayerPositionProvider.notifier).pause();
-          },
-          onChanged: (double newValue) {
-            setState(() {
+    return Column(children: [
+      SizedBox(
+        height: 80,
+        child: SliderTheme(
+          data: SliderThemeData(
+            overlayShape: SliderComponentShape.noOverlay,
+            valueIndicatorShape: SliderComponentShape.noOverlay,
+            activeTickMarkColor: Colors.transparent,
+            inactiveTickMarkColor: Colors.transparent,
+            inactiveTrackColor: AGLDemoColors.periwinkleColor,
+            thumbShape:
+                const PolygonSliderThumb(sliderValue: 3, thumbRadius: 23),
+            //trackHeight: 5,
+          ),
+          child: Slider(
+            max: songLength.inMilliseconds.toDouble(),
+            value: songPosition.inMilliseconds.toDouble(),
+            onChangeStart: (double value) {
+              // Disable timer so position will not change while control is
+              // being dragged.  It will be re-enabled via the playback state
+              // update from MPD.
+              ref.read(mediaPlayerPositionProvider.notifier).pause();
+            },
+            onChanged: (double newValue) {
               ref
                   .read(mediaPlayerPositionProvider.notifier)
                   .set(Duration(milliseconds: newValue.toInt()));
-            });
-          },
-          onChangeEnd: (double newValue) {
-            ref.read(mpdClientProvider).seek(newValue.toInt());
-          },
+            },
+            onChangeEnd: (double newValue) {
+              ref.read(mpdClientProvider).seek(newValue.toInt());
+            },
+          ),
         ),
       ),
-    );
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+                width: 80,
+                height: 40,
+                child: Text(
+                  songPositionString,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 26,
+                      shadows: [Helpers.dropShadowRegular]),
+                )),
+            SizedBox(
+                width: 80,
+                height: 40,
+                child: Text(
+                  songLengthString,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 26,
+                      shadows: [Helpers.dropShadowRegular]),
+                ))
+          ],
+        ),
+      ),
+    ]);
   }
 }
 
@@ -260,13 +242,11 @@ class _MediaPlayerControlsActionsState
         InkWell(
             customBorder: const CircleBorder(),
             onTap: () {
-              setState(() {
-                if (isPlaying) {
-                  ref.read(mpdClientProvider).pause();
-                } else {
-                  ref.read(mpdClientProvider).play();
-                }
-              });
+              if (isPlaying) {
+                ref.read(mpdClientProvider).pause();
+              } else {
+                ref.read(mpdClientProvider).play();
+              }
             },
             onTapDown: (details) {
               setState(() {
@@ -274,7 +254,9 @@ class _MediaPlayerControlsActionsState
               });
             },
             onTapUp: (details) {
-              isPressed = false;
+              setState(() {
+                isPressed = false;
+              });
             },
             child: Container(
               width: 64,

@@ -2,6 +2,20 @@
 
 import '../../export.dart';
 
+class SelectedNotifier extends Notifier<String> {
+  @override
+  String build() {
+    return "Home";
+  }
+
+  void update(String selected) {
+    state = selected;
+  }
+}
+
+final selectedProvider =
+    NotifierProvider<SelectedNotifier, String>(SelectedNotifier.new);
+
 class CustomBottomBar extends ConsumerStatefulWidget {
   const CustomBottomBar({super.key});
 
@@ -10,13 +24,6 @@ class CustomBottomBar extends ConsumerStatefulWidget {
 }
 
 class CustomBottomBarState extends ConsumerState<CustomBottomBar> {
-  @override
-  void initState() {
-    super.initState();
-    // "ref" can be used in all life-cycles of a StatefulWidget.
-    //ref.read(counterProvider);
-  }
-
   double iconSize = 57;
   List<BottomBarItems> navItems = [
     BottomBarItems(title: "Home", image: "Dashboard"),
@@ -25,7 +32,6 @@ class CustomBottomBarState extends ConsumerState<CustomBottomBar> {
     BottomBarItems(title: "Settings", image: "Settings"),
     BottomBarItems(title: "Apps", image: "Apps")
   ];
-  String selectedNav = "Home";
 
   void _onItemTapped(String title) {
     AppState status = AppState.dashboard;
@@ -41,9 +47,7 @@ class CustomBottomBarState extends ConsumerState<CustomBottomBar> {
       case "Apps":
         status = AppState.apps;
     }
-    setState(() {
-      selectedNav = title;
-    });
+    ref.read(selectedProvider.notifier).update(title);
     ref.read(appLauncherProvider).activateApp("homescreen");
     ref.read(currentTimeProvider.notifier).isYearChanged = false;
     ref.read(appProvider.notifier).update(status);
@@ -51,6 +55,7 @@ class CustomBottomBarState extends ConsumerState<CustomBottomBar> {
 
   @override
   Widget build(BuildContext context) {
+    var selectedNav = ref.watch(selectedProvider.notifier);
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Row(

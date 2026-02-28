@@ -39,7 +39,8 @@ class DashBoardState extends ConsumerState<DashBoard>
       });
     }
 
-    bool randomHybridAnimation = ref.read(appConfigProvider).randomHybridAnimation;
+    bool randomHybridAnimation =
+        ref.read(appConfigProvider).randomHybridAnimation;
     if (randomHybridAnimation) {
       timer = Timer.periodic(const Duration(seconds: 5), (timer) {
         Random random = Random();
@@ -61,23 +62,14 @@ class DashBoardState extends ConsumerState<DashBoard>
 
   @override
   Widget build(BuildContext context) {
-    Widget svgImage = Align(
-      alignment: Alignment.bottomCenter,
-      child: SvgPicture.asset(
-        'assets/Car Illustration.svg',
-        width: 625,
-        height: 440,
-        fit: BoxFit.fitHeight,
-      ),
-    );
-
     Widget fadeContent = FadeTransition(
         opacity: _animation,
         child: const Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Row(
+            RepaintBoundary(
+                child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               //mainAxisSize: MainAxisSize.max,
               children: [
@@ -85,12 +77,12 @@ class DashBoardState extends ConsumerState<DashBoard>
                 SpeedProgressIndicator(),
                 FuelProgressIndicator(),
               ],
-            ),
-            HybridModel(),
+            )),
+            RepaintBoundary(child: HybridModel()),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                TemperatureWidget(),
+                TemperatureRowWidget(),
                 RangeWidget(),
               ],
             ),
@@ -105,9 +97,10 @@ class DashBoardState extends ConsumerState<DashBoard>
           child: fadeContent,
         ),
         Positioned(
-          bottom: 138,
-          child: svgImage,
-        ),
+            bottom: 138,
+            child: Align(
+                alignment: Alignment.bottomCenter,
+                child: ref.read(carImageProvider))),
       ],
     );
   }

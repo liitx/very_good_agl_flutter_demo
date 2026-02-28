@@ -2,6 +2,20 @@ import 'package:flutter_ics_homescreen/export.dart';
 import 'package:gradient_borders/gradient_borders.dart';
 import 'package:rive/rive.dart' as rive;
 
+final fanOffImageProvider = Provider((ref) {
+  // It's not ideal to hardcode the size here, but seems less messy
+  // than sticking another provider or a global in for it.
+  return SvgPicture.asset(
+    "assets/ACMainButtonOff.svg",
+    width: 80,
+    height: 80,
+  );
+});
+
+final fanAnimationFileProvider = FutureProvider((ref) async {
+  return await rive.RiveFile.asset('assets/new_file.riv');
+});
+
 class FanSpeedControls extends ConsumerStatefulWidget {
   const FanSpeedControls({super.key});
 
@@ -10,7 +24,7 @@ class FanSpeedControls extends ConsumerStatefulWidget {
 }
 
 class FanSpeedControlsState extends ConsumerState<FanSpeedControls>
-    with TickerProviderStateMixin {
+    with SingleTickerProviderStateMixin {
   bool isPressed = false;
   LinearGradient gradientEnable1 = const LinearGradient(colors: <Color>[
     Color(0xFF2962FF),
@@ -45,7 +59,6 @@ class FanSpeedControlsState extends ConsumerState<FanSpeedControls>
       vsync: this,
       duration: const Duration(seconds: 1),
     );
-
     animationController.addListener(() {
       setState(() {
         // _currentColorIndex = (_currentColorIndex + 1) % colorsList.length;
@@ -67,10 +80,14 @@ class FanSpeedControlsState extends ConsumerState<FanSpeedControls>
     double fanSpeedHeight = MediaQuery.sizeOf(context).height * 0.15;
     double strokeWidth = MediaQuery.sizeOf(context).height * 0.03;
 
-    double iconSize = 80;
+    const double iconSize = 80;
 
-    int selectedFanSpeed = ref.watch(vehicleProvider.select((vehicle) => vehicle.fanSpeed));
+    int selectedFanSpeed =
+        ref.watch(vehicleProvider.select((vehicle) => vehicle.fanSpeed));
     controlProgress = selectedFanSpeed * 0.3;
+
+    AsyncValue<rive.RiveFile> fanAnimationFile =
+        ref.watch(fanAnimationFileProvider);
 
     return Stack(
       children: [
@@ -171,30 +188,30 @@ class FanSpeedControlsState extends ConsumerState<FanSpeedControls>
                           .updateFanSpeed(controlProgress ~/ 0.3);
                     });
                   },
-                  onTapDown: (details) {
-                  },
-                  onTapUp: (details) {
-                  },
+                  onTapDown: (details) {},
+                  onTapUp: (details) {},
                   child: Container(
                       width: size,
                       height: size,
                       alignment: Alignment.center,
                       child: !_isPlaying && controlProgress == 0.0
-                          ? SvgPicture.asset(
-                              "assets/ACMainButtonOff.svg",
-                              width: iconSize,
-                              height: iconSize,
-                            )
+                          ? ref.read(fanOffImageProvider)
                           : SizedBox(
                               width: iconSize,
                               height: iconSize,
-                              child: rive.RiveAnimation.asset(
-                                  'assets/new_file.riv',
-                                  controllers: [_controller],
-                                  onInit: (_) => setState(() {
-                                        _controller.isActive = true;
-                                      }))))
-                  ),
+                              child: fanAnimationFile.when(
+                                  loading: () => const SizedBox(
+                                      width: iconSize, height: iconSize),
+                                  error: (err, stack) => const SizedBox(
+                                      width: iconSize, height: iconSize),
+                                  data: (fanAnimationFile) {
+                                    return rive.RiveAnimation.direct(
+                                        fanAnimationFile,
+                                        controllers: [_controller],
+                                        onInit: (_) => setState(() {
+                                              _controller.isActive = true;
+                                            }));
+                                  })))),
             ),
           ),
         ))

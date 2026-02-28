@@ -3,6 +3,10 @@ import 'package:flutter_ics_homescreen/presentation/custom_icons/custom_icons.da
 
 enum FanMode { off, min, medium, max }
 
+final fanButtonBackgroundProvider = Provider((ref) {
+  return SvgPicture.asset('assets/fanButtonBg.svg');
+});
+
 class FanBar extends ConsumerStatefulWidget {
   const FanBar({super.key});
 
@@ -15,8 +19,8 @@ class FanBarState extends ConsumerState<FanBar> {
 
   @override
   Widget build(BuildContext context) {
-    final vehicle = ref.watch(vehicleProvider.select((vehicle) => vehicle));
-    selectedFanSpeed = vehicle.fanSpeed;
+    final selectedFanSpeed =
+        ref.watch(vehicleProvider.select((vehicle) => vehicle.fanSpeed));
 
     return Column(children: [
       Container(
@@ -57,7 +61,7 @@ class FanBarState extends ConsumerState<FanBar> {
                       ? Stack(
                           alignment: Alignment.center,
                           children: [
-                            SvgPicture.asset('assets/fanButtonBg.svg'),
+                            ref.read(fanButtonBackgroundProvider),
                             const Icon(
                               CustomIcons.fan_on_enabled,
                               color: Colors.white,
@@ -88,7 +92,7 @@ class FanBarState extends ConsumerState<FanBar> {
                       ? Stack(
                           alignment: Alignment.center,
                           children: [
-                            SvgPicture.asset('assets/fanButtonBg.svg'),
+                            ref.read(fanButtonBackgroundProvider),
                             const Icon(
                               CustomIcons.fan_on_enabled,
                               color: Colors.white,
@@ -120,7 +124,7 @@ class FanBarState extends ConsumerState<FanBar> {
                       ? Stack(
                           alignment: Alignment.center,
                           children: [
-                            SvgPicture.asset('assets/fanButtonBg.svg'),
+                            ref.read(fanButtonBackgroundProvider),
                             const Icon(
                               CustomIcons.fan_on_enabled,
                               color: Colors.white,
@@ -169,7 +173,7 @@ class FanBarState extends ConsumerState<FanBar> {
                   ? Stack(
                       alignment: Alignment.center,
                       children: [
-                        SvgPicture.asset('assets/fanButtonBg.svg'),
+                        ref.read(fanButtonBackgroundProvider),
                         const Icon(
                           Icons.mode_fan_off,
                           color: Colors.white,
