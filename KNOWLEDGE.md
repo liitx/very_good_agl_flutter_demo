@@ -123,11 +123,18 @@ to load early (a `/etc/modules-load.d/i915.conf` drop-in read at ~8.5 s) wins th
 
 ---
 
-## Variant C — AGL appliance on Raspberry Pi 4
+## Variant C — AGL appliance on Raspberry Pi 4 / 5
+
+> [!TIP]
+> Step-by-step `flutter create` → AGL-on-Pi guide (recipe, build commands, full Pi 4 vs Pi 5
+> breakdown) is in [docs/flutter-to-agl-pi.md](docs/flutter-to-agl-pi.md).
 
 > [!WARNING]
 > UNVERIFIED (researchable). Planned, not built. AGL has a first-class Pi 4 target, so this is
-> a separate aarch64 image build, not a reuse of the Surface kernel work.
+> a separate aarch64 image build, not a reuse of the Surface kernel work. **Pi 5** adds BCM2712 +
+> the RP1 I/O chip + VideoCore VII, needs a 6.6+ kernel and newer Mesa, and is not an officially
+> validated AGL target yet. The Flutter app and its recipe are identical across Pi 4 and Pi 5;
+> only the BSP/kernel/GPU/MACHINE layer differs.
 > - Build docs (lamprey release, confirmed live):
 >   https://docs.automotivelinux.org/en/lamprey/0_Getting_Started/2_Building_AGL_Image/5_2_Raspberry_Pi_4/
 > - Build-env entry (master): https://docs.automotivelinux.org/en/master/01_Getting_Started/02_Building_AGL_Image/04_Initializing_Your_Build_Environment/

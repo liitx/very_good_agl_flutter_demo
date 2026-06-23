@@ -247,11 +247,15 @@ The full build recipe, the kernel story, the GPU fix, and the input fix live in
 
 ---
 
-## Variant C — AGL appliance on Raspberry Pi 4
+## Variant C — AGL appliance on Raspberry Pi 4 / 5
 
-Planned. AGL has a supported Raspberry Pi 4 board target, so this is a separate aarch64 image
-build rather than a reuse of the Surface kernel work. Tracking notes go in
-[KNOWLEDGE.md](KNOWLEDGE.md) as the work starts.
+Planned. AGL has a supported Raspberry Pi 4 target, so this is a separate aarch64 image build
+rather than a reuse of the Surface kernel work. The Flutter app and recipe are identical across
+Pi 4 and Pi 5; only the BSP/kernel/GPU layer differs, and Pi 5 is not an officially validated AGL
+target yet.
+
+See **[docs/flutter-to-agl-pi.md](docs/flutter-to-agl-pi.md)** for the full `flutter create` →
+AGL-on-Pi pipeline (recipe, build commands) and the Pi 4 vs Pi 5 breakdown.
 
 ---
 
