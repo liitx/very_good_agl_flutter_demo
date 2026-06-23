@@ -5,7 +5,7 @@ a **Surface Pro 8** today and a **Raspberry Pi 4** next. This repo packages the 
 anyone can clone it and get the in-vehicle infotainment UI on screen, plus the recipe and
 artifacts for booting the full AGL appliance on the Surface using a custom Linux kernel.
 
-Built on AGL's open-source [`flutter-ics-homescreen`](https://gerrit.automotivelinux.org/gerrit/apps/flutter-ics-homescreen).
+Built on AGL's open-source [`flutter-ics-homescreen`](https://gerrit.automotivelinux.org/gerrit/gitweb?p=apps/flutter-ics-homescreen.git;a=summary).
 
 ## Contents
 
