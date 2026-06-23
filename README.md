@@ -24,7 +24,7 @@ Built on AGL's open-source [`flutter-ics-homescreen`](https://gerrit.automotivel
 
 Track what's done, what's in progress, and what's planned, or pitch an idea:
 
-- **Progress board (kanban):** https://github.com/liitx/very_good_agl_flutter_demo/projects
+- **Progress board (kanban):** https://github.com/users/liitx/projects/1
   — swimlanes for Backlog → Ready → Analysis → In progress → Blockers → Done.
 - **Have an idea?** [Open an idea issue](https://github.com/liitx/very_good_agl_flutter_demo/issues/new?template=idea.yml).
   **New ideas start in the Backlog lane**, then get pulled into Ready / Analysis / In progress
