@@ -7,6 +7,15 @@ artifacts for booting the full AGL appliance on the Surface using a custom Linux
 
 Built on AGL's open-source [`flutter-ics-homescreen`](https://gerrit.automotivelinux.org/gerrit/apps/flutter-ics-homescreen).
 
+## 📋 Roadmap & progress board
+
+Track what's done, what's in progress, and what's planned, or pitch an idea:
+
+- **Progress board (kanban):** https://github.com/liitx/very_good_agl_flutter_demo/projects
+  — swimlanes for Backlog, Ready, Analysis, In progress, Blockers, Done.
+- **Add an idea / request / bug:** [open an issue](https://github.com/liitx/very_good_agl_flutter_demo/issues/new)
+  — issues show up as cards you can drop into a lane on the board.
+
 ---
 
 ## TL;DR
