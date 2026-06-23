@@ -7,7 +7,20 @@ artifacts for booting the full AGL appliance on the Surface using a custom Linux
 
 Built on AGL's open-source [`flutter-ics-homescreen`](https://gerrit.automotivelinux.org/gerrit/apps/flutter-ics-homescreen).
 
-## 📋 Roadmap & progress board
+## Contents
+
+- [Quickstart](#quickstart)
+- [The three variants](#the-three-variants)
+- [Set it up with Claude Code](#set-it-up-with-claude-code-recommended)
+- [Variant A: the windowed app](#variant-a-the-windowed-app)
+- [Variant B: AGL on the Surface (USB boot)](#variant-b-agl-on-the-surface-usb-boot)
+- [Variant C: AGL on Raspberry Pi 4 and 5](#variant-c-agl-on-raspberry-pi-4-and-5)
+- [Build your own AGL app — `flutter create`](#agl-flutter-create-your_app_name_here)
+- [Logging and how Claude tracks your setup](#logging-and-how-claude-tracks-your-setup)
+- [Roadmap & progress board](#roadmap-and-progress-board)
+- [More docs](#more-docs)
+
+## Roadmap and progress board
 
 Track what's done, what's in progress, and what's planned, or pitch an idea:
 
@@ -19,7 +32,7 @@ Track what's done, what's in progress, and what's planned, or pitch an idea:
 
 ---
 
-## TL;DR
+## Quickstart
 
 **With Claude Code (recommended):** clone, `cd` in, run `claude`, then type `/setup-agl-x86`
 (or `/setup-agl-rpi4`, `/setup-agl-usb`). It drives the whole setup and resumes if interrupted.
@@ -106,7 +119,7 @@ command. The full configuration contract is in [CONFIGURATION.md](CONFIGURATION.
 
 ---
 
-## Variant A — Windowed app (the portable one)
+## Variant A: the windowed app
 
 The homescreen is a normal Flutter Linux desktop app. It builds for the host architecture
 automatically, so the same source runs on x86_64 (Surface) and aarch64 (Pi 4).
@@ -220,7 +233,7 @@ Every run is captured to `logs/run-<timestamp>.log`, with `logs/latest.log` poin
 
 ---
 
-## Variant B — AGL appliance on the Surface Pro 8
+## Variant B: AGL on the Surface (USB boot)
 
 This is the full AGL operating system booted from a USB stick, with the IVI homescreen as the
 system UI and **native touchscreen, Type Cover keyboard, trackpad, and stylus** working. It
@@ -247,15 +260,34 @@ The full build recipe, the kernel story, the GPU fix, and the input fix live in
 
 ---
 
-## Variant C — AGL appliance on Raspberry Pi 4 / 5
+## Variant C: AGL on Raspberry Pi 4 and 5
 
 Planned. AGL has a supported Raspberry Pi 4 target, so this is a separate aarch64 image build
 rather than a reuse of the Surface kernel work. The Flutter app and recipe are identical across
 Pi 4 and Pi 5; only the BSP/kernel/GPU layer differs, and Pi 5 is not an officially validated AGL
-target yet.
+target yet. For the build pipeline see the next section.
 
-See **[docs/flutter-to-agl-pi.md](docs/flutter-to-agl-pi.md)** for the full `flutter create` →
-AGL-on-Pi pipeline (recipe, build commands) and the Pi 4 vs Pi 5 breakdown.
+---
+
+## AGL: `flutter create <your_app_name_here>`
+
+Want to take your **own** Flutter app (not this homescreen) and run it inside AGL on a
+Raspberry Pi? That is a distinct flow from the three variants above, and it has its own
+walkthrough.
+
+**➡️ Full walkthrough: [docs/flutter-to-agl-pi.md](docs/flutter-to-agl-pi.md)**
+
+In short:
+
+1. `flutter create your_app` — build it as a normal Flutter app (iterate with Variant A).
+2. Wrap it in a meta-flutter Yocto recipe (`inherit flutter-app`, set `FLUTTER_APPLICATION_PATH`).
+3. It runs on the **flutter-auto** embedder under agl-compositor (Wayland).
+4. Add the recipe + embedder to `IMAGE_INSTALL`, build the AGL image (`-m raspberrypi4`), flash, boot.
+
+**How it varies by board:** the app and recipe are **identical** on Pi 4 and Pi 5. Only the
+board layer differs (Pi 5 = BCM2712 + the RP1 I/O chip + VideoCore VII, needs a 6.6+ kernel and
+newer Mesa, and is not an officially validated AGL target yet). The
+[walkthrough](docs/flutter-to-agl-pi.md) has the full Pi 4 vs Pi 5 table and confidence notes.
 
 ---
 
@@ -298,6 +330,16 @@ project's helper scripts make logs survive: `enable-persist.sh` and `capture.sh`
 disk on the USB (`/home/agl-debug.log`, compositor and homescreen logs), and `agldiag.sh` dumps
 the journal plus i915/DRM and input lines host-side after a boot. See [KNOWLEDGE.md](KNOWLEDGE.md)
 (Variant B) and the project's `STATUS.md`.
+
+## More docs
+
+| Doc | What's in it |
+|---|---|
+| [CONFIGURATION.md](CONFIGURATION.md) | The binary's config contract: every flag, env var, TOML key, port, with VERIFIED/UNVERIFIED tags |
+| [KNOWLEDGE.md](KNOWLEDGE.md) | Deep dive per variant: the Surface kernel/GPU/input story, backends, Pi 4/5 |
+| [docs/flutter-to-agl-pi.md](docs/flutter-to-agl-pi.md) | `flutter create` → AGL on a Pi, with the Pi 4 vs Pi 5 breakdown |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | How to add an item to the board (conventions, labels, lanes) |
+| [CLAUDE.md](CLAUDE.md) | Verified system facts + conventions for AI-assisted work here |
 
 ## Repository layout
 
