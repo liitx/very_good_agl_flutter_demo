@@ -245,6 +245,46 @@ build rather than a reuse of the Surface kernel work. Tracking notes go in
 
 ---
 
+## Logging and how Claude tracks your setup
+
+Run output and setup state are captured so both you and Claude always know what happened and
+where you are.
+
+### Run logs (Variant A)
+
+Every launch through `scripts/run.sh` / `run-fullscreen.sh` / `demo.sh` / `demo-fullscreen.sh`
+captures the app's stdout and stderr, timestamped per line, to `logs/run-<timestamp>.log`, and
+points `logs/latest.log` at the newest run.
+
+```bash
+./scripts/logs.sh          # page the latest run
+./scripts/logs.sh -f       # follow the latest run live
+./scripts/logs.sh -l       # list all captured runs
+```
+
+The local KUKSA databroker logs separately to `.dev-backends/kuksa/databroker.log`.
+
+### How Claude knows where you are
+
+When you start Claude Code in this repo, a **SessionStart hook** (`.claude/hooks/agl-status.sh`)
+captures a snapshot and feeds it to Claude automatically: your setup progress and resume points
+(`scripts/setup-state.sh`), the active variant, whether the KUKSA databroker and the app are
+running, and the last 25 lines of `logs/latest.log`. So Claude opens already knowing your state
+instead of having to go look.
+
+A **statusLine** (`.claude/statusline.sh`) keeps the active setup variant visible
+(`AGL setup: x86 · <branch>`), and the `/setup-agl-*` commands title the session and track
+progress in `.agl-setup/state.json` so they resume. These activate only when Claude Code runs
+with this repo as the project (you may get a one-time trust prompt for the hooks).
+
+### Device-side logging (Variant B, AGL on the Surface)
+
+On the AGL appliance, journald is volatile (RAM), so a crash's logs vanish on reboot. The
+project's helper scripts make logs survive: `enable-persist.sh` and `capture.sh` write to real
+disk on the USB (`/home/agl-debug.log`, compositor and homescreen logs), and `agldiag.sh` dumps
+the journal plus i915/DRM and input lines host-side after a boot. See [KNOWLEDGE.md](KNOWLEDGE.md)
+(Variant B) and the project's `STATUS.md`.
+
 ## Repository layout
 
 ```
@@ -256,8 +296,12 @@ linux/               Linux desktop runner (Variant A); window sizing lives here
 config/              sample TOML config (point at it with ICS_CONFIG_DIR)
 scripts/             bootstrap, build, run, run-fullscreen, demo, demo-fullscreen, logs
 scripts/setup-state.sh          resumable state for the /setup-agl-* commands
+scripts/session-title.sh        title a session by its setup variant (x86/rpi4/usb)
 scripts/dev-backends/kuksa.sh   run a real KUKSA databroker locally for live data
 .claude/commands/    /setup-agl-x86, /setup-agl-rpi4, /setup-agl-usb guided setup commands
+.claude/hooks/agl-status.sh     SessionStart hook: injects a setup snapshot into Claude
+.claude/statusline.sh           shows the active setup variant in the status line
+.claude/settings.json           registers the hook + status line
 CONFIGURATION.md     the binary's config contract: flags, env vars, TOML keys, ports
 KNOWLEDGE.md         deep knowledge base: variants, kernel, GPU/input fixes, backends, Pi 4
 CLAUDE.md            verified system facts + conventions for AI-assisted work here

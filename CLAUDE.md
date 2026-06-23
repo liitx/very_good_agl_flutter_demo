@@ -20,7 +20,8 @@ the user's **personal GitHub**.
 
 - Host: Surface Pro 8, Ubuntu 24.04.4 LTS, kernel **6.14.11+** (custom linux-surface), x86_64, 16 GB RAM.
 - Display: eDP-1 **2880x1920** @ 60 Hz, Wayland session.
-- Toolchain present: Flutter **3.35.7** (stable) at `~/flutter`, Dart 3.9.2, clang, cmake, ninja, pkg-config, GTK **3.24.41**. `gh` CLI is NOT installed; `git` is.
+- Toolchain present: Flutter **3.35.7** (stable) at `~/flutter`, Dart 3.9.2, clang, cmake, ninja, pkg-config, GTK **3.24.41**, `git`, and `gh` **2.95.0** at `~/.local/bin` (on PATH via `~/.bashrc`).
+- Remote: `upstream` = AGL gerrit; the personal GitHub repo target is `liitx/very_good_agl_flutter_demo`.
 
 ## This repo's additions to upstream (the only non-upstream code)
 
@@ -30,7 +31,9 @@ the user's **personal GitHub**.
 - `lib/data/data_providers/app.dart`: `DesignScaler` (root UI scaler) + `ICS_DESIGN_SIZE`.
 - `lib/data/data_providers/app_config_provider.dart`: `ICS_CONFIG_DIR` override.
 - `linux/my_application.cc`: `ICS_FULLSCREEN` / `ICS_WINDOW_SIZE`, resizable default.
-- `scripts/`, `config/`, the three docs. No presentation/asset/theme files were changed.
+- `scripts/`, `config/`, the docs. No presentation/asset/theme files were changed.
+- `.claude/`: SessionStart hook (`hooks/agl-status.sh`), `statusline.sh`, `settings.json`,
+  and `commands/setup-agl-*` — the logging/observability + guided-setup layer.
 
 ## Conventions
 
@@ -52,6 +55,13 @@ the user's **personal GitHub**.
 - **pkill self-match.** `pkill -f flutter_ics_homescreen` in a Bash tool call matches the
   shell running it and kills it (exit 144). Kill by PID, or `pgrep -f ... | grep -vw "$$" | xargs kill`,
   or launch with `run_in_background`.
+- **Stale build cache after a dir rename/move.** `build/` and `linux/flutter/ephemeral/*` and
+  `ios/Flutter/Generated.*` bake in the absolute project path. After renaming/moving the repo,
+  `flutter build` fails with a CMake "directory is different" error. Fix: `rm -rf build/` then
+  rebuild (these are git-ignored and regenerate). `flutter pub get` refreshes the rest.
+- **Logging.** Run output is captured by `scripts/run.sh` to `logs/run-<ts>.log` (+ `latest.log`
+  symlink); view with `scripts/logs.sh`. Claude gets a setup snapshot at session start via the
+  SessionStart hook. Device-side AGL logs (Variant B) are on the USB (journald is volatile).
 
 ## Service ports (from source)
 
