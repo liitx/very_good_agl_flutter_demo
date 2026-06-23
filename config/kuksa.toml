@@ -1,0 +1,13 @@
+# Sample KUKSA.val connection config (read separately from the main TOML).
+# On the AGL appliance this lives at /etc/xdg/AGL/kuksa.toml.
+# With ICS_CONFIG_DIR set, the app reads $ICS_CONFIG_DIR/kuksa.toml.
+#
+# This matches the local databroker started by scripts/dev-backends/kuksa.sh
+# (insecure, no auth, localhost:55555).
+
+hostname = "localhost"
+port = 55555
+use-tls = false
+# authorization = ""            # JWT string, or an absolute path to a token file
+# ca-certificate = "/etc/kuksa-val/CA.pem"
+# tls-server-name = ""

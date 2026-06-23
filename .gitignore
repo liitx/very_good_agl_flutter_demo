@@ -44,3 +44,15 @@ app.*.map.json
 /android/app/release
 
 .desktop-homescreen
+
+# captured run logs
+logs/
+
+# local dev backend binaries/cache
+.dev-backends/
+
+# resumable setup state
+.agl-setup/
+
+# gerrit metadata, irrelevant on a personal fork
+.gitreview

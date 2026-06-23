@@ -1,0 +1,30 @@
+# Sample app config for the IVI homescreen.
+# Point the app at this dir without root:
+#   ICS_CONFIG_DIR=$PWD/config ./scripts/run.sh
+# On the AGL appliance this file lives at /etc/xdg/AGL/flutter-ics-homescreen.toml.
+#
+# All keys are optional; anything omitted falls back to the in-code defaults.
+
+# Disable the animated background (lighter on low-end GPUs).
+disable-bg-animation = false
+# Use a plain (non-animated) background image instead of the live animation.
+plain-bg = false
+# Show the voice-assistant UI (needs the voice-agent service to function).
+enable-voice-assistant = false
+
+[radio]
+hostname = "localhost"
+port = 50053
+presets = "/etc/xdg/AGL/flutter-ics-homescreen/radio-presets.toml"
+
+[storage]
+hostname = "localhost"
+port = 50054
+
+[mpd]
+hostname = "localhost"
+port = 6600
+
+[voiceAgent]
+hostname = "localhost"
+port = 51053

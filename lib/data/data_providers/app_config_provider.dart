@@ -212,6 +212,19 @@ class AppConfig {
 
   static String configFilePath = '/etc/xdg/AGL/flutter-ics-homescreen.toml';
 
+  /// Base directory for config files. Defaults to the AGL system path
+  /// `/etc/xdg/AGL`. Override with the `ICS_CONFIG_DIR` environment variable so
+  /// developers can point at a repo-local `config/` dir without root, e.g.
+  ///   ICS_CONFIG_DIR=$PWD/config ./scripts/run.sh
+  static String configDir() {
+    final dir = Platform.environment['ICS_CONFIG_DIR'];
+    if (dir != null && dir.isNotEmpty) return dir;
+    return '/etc/xdg/AGL';
+  }
+
+  static String resolvedConfigFilePath() =>
+      '${configDir()}/flutter-ics-homescreen.toml';
+
   AppConfig(
       {required this.disableBkgAnimation,
       required this.plainBackground,
@@ -229,21 +242,25 @@ class AppConfig {
       final Map<String, String> envVars = Platform.environment;
       final configHome = envVars['XDG_CONFIG_HOME'];
 
-      // Read global configuration
-      var configFilePath = KuksaConfig.globalConfigFilePath;
-      if (configHome != null) {
-        configFilePath = configHome + "/AGL/kuksa.toml";
+      // Resolve the base config dir. Precedence: ICS_CONFIG_DIR (dev override),
+      // then XDG_CONFIG_HOME/AGL, then the AGL system default /etc/xdg/AGL.
+      final icsDir = envVars['ICS_CONFIG_DIR'];
+      final String baseDir;
+      if (icsDir != null && icsDir.isNotEmpty) {
+        baseDir = icsDir;
+      } else if (configHome != null) {
+        baseDir = "$configHome/AGL";
+      } else {
+        baseDir = "/etc/xdg/AGL";
       }
+
+      // Read global configuration
       var config = defaultConfig;
-      config = readKuksaConfig(configFilePath, config);
+      config = readKuksaConfig("$baseDir/kuksa.toml", config);
 
       // Read app-specific configuration
-      configFilePath = KuksaConfig.appConfigFilePath;
-      if (configHome != null) {
-        configFilePath =
-            configHome + "/AGL/flutter-cluster-dashboard/kuksa.toml";
-      }
-      config = readKuksaConfig(configFilePath, config);
+      config = readKuksaConfig(
+          "$baseDir/flutter-ics-homescreen/kuksa.toml", config);
       return config;
     } catch (_) {
       debugPrint("Invalid KUKSA.val configuration, using defaults");
@@ -334,18 +351,18 @@ class AppConfig {
 }
 
 final appConfigProvider = Provider((ref) {
-  final configFile = File(AppConfig.configFilePath);
+  final configFile = File(AppConfig.resolvedConfigFilePath());
   try {
     // KUKSA configuration is in its own file(s)
     KuksaConfig kuksaConfig = AppConfig.parseKuksaConfig();
 
-    print("Reading configuration ${AppConfig.configFilePath}");
+    print("Reading configuration ${AppConfig.resolvedConfigFilePath()}");
     var configMap = {};
     try {
       String content = configFile.readAsStringSync();
       configMap = TomlDocument.parse(content).toMap();
     } catch (_) {
-      debugPrint("Could not read ${AppConfig.configFilePath}");
+      debugPrint("Could not read ${AppConfig.resolvedConfigFilePath()}");
       configMap = {};
     }
 

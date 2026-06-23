@@ -1,16 +1,27 @@
 import 'package:device_preview/device_preview.dart';
 
 import 'export.dart';
+import 'data/data_providers/mock_data.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Start asynchronously connecting to API provider backends
   final container = ProviderContainer();
-  container.read(storageClientProvider).connect();
-  container.read(valClientProvider).connect();
-  container.read(radioClientProvider).connect();
-  container.read(mpdClientProvider).connect();
+
+  if (useMockData) {
+    // Offline demo mode: do not touch any AGL backend. Seed canned data so the
+    // UI renders fully with zero external services. Reading the *ClientProviders
+    // is deliberately skipped so no gRPC channels are ever opened.
+    debugPrint(
+        'MOCK_DATA enabled: seeding canned data, skipping backend connections.');
+    seedMockData(container);
+  } else {
+    // Start asynchronously connecting to API provider backends
+    container.read(storageClientProvider).connect();
+    container.read(valClientProvider).connect();
+    container.read(radioClientProvider).connect();
+    container.read(mpdClientProvider).connect();
+  }
 
   // Pass the container to ProviderScope and then run the app.
   runApp(

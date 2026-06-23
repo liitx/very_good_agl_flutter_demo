@@ -1,5 +1,9 @@
 #include "my_application.h"
 
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+
 #include <flutter_linux/flutter_linux.h>
 #ifdef GDK_WINDOWING_X11
 #include <gdk/gdkx.h>
@@ -47,7 +51,28 @@ static void my_application_activate(GApplication* application) {
     gtk_window_set_title(window, "flutter_ics_homescreen");
   }
 
-  gtk_window_set_default_size(window, 1280, 720);
+  // Window sizing. Defaults to 1280x720 for desktop dev. Override at runtime:
+  //   ICS_FULLSCREEN=1     -> fullscreen, fills the display 1:1 (use on the device)
+  //   ICS_WINDOW_SIZE=WxH  -> explicit window size, e.g. 1080x1920 or 2880x1920
+  const char* fullscreen_env = getenv("ICS_FULLSCREEN");
+  if (fullscreen_env != nullptr && fullscreen_env[0] != '\0' &&
+      strcmp(fullscreen_env, "0") != 0) {
+    gtk_window_fullscreen(window);
+  } else {
+    int win_w = 1280, win_h = 720;
+    const char* size_env = getenv("ICS_WINDOW_SIZE");
+    if (size_env != nullptr) {
+      int w = 0, h = 0;
+      if (sscanf(size_env, "%dx%d", &w, &h) == 2 && w > 0 && h > 0) {
+        win_w = w;
+        win_h = h;
+      }
+    }
+    // Default: a normal resizable window. The Flutter UI rescales live to the
+    // window via the DesignScaler, so dragging the window resizes the UI.
+    gtk_window_set_resizable(window, TRUE);
+    gtk_window_set_default_size(window, win_w, win_h);
+  }
   gtk_widget_show(GTK_WIDGET(window));
 
   g_autoptr(FlDartProject) project = fl_dart_project_new();

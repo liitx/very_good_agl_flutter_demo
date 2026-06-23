@@ -17,3 +17,7 @@ const randomHybridAnimationDefault =
     bool.fromEnvironment('RANDOM_HYBRID_ANIMATION');
 const enableVoiceAssistantDefault =
     bool.fromEnvironment('ENABLE_VOICE_ASSISTANT');
+// When true, the app does NOT connect to any AGL backend service and instead
+// seeds canned vehicle/audio data so the UI renders a full demo offline.
+// Enable with: flutter run --dart-define=MOCK_DATA=true
+const useMockData = bool.fromEnvironment('MOCK_DATA');
