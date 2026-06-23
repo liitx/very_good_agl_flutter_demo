@@ -86,6 +86,9 @@ flutter:
     - assets/
     - animations/
     - animations/hybrid_model/
+    # Bundled Google Fonts (Oswald, Fira Sans, Raleway, Bruno Ace) so the app
+    # renders offline on the AGL device without fetching from fonts.gstatic.com.
+    - fonts/google_fonts/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

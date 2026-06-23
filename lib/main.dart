@@ -1,10 +1,16 @@
 import 'package:device_preview/device_preview.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'export.dart';
 import 'data/data_providers/mock_data.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Use the fonts bundled in assets (fonts/google_fonts/) instead of fetching
+  // from fonts.gstatic.com. The AGL device has no network, so fetching only
+  // produced errors and fallback fonts; the bundled fonts render offline.
+  GoogleFonts.config.allowRuntimeFetching = false;
 
   final container = ProviderContainer();
 
