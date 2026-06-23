@@ -32,8 +32,10 @@ next lane as its state changes.
 
 - **One item per issue.** Keep scope tight so it can move through the lanes cleanly.
 - **Title prefixes:** `[idea]`, `[bug]`. Templates set these.
-- **Labels:** `idea` / `bug` (type) and `backlog` (lane on entry). Add a variant note in the body
-  (x86 / Surface USB / Pi 4 / docs / tooling).
+- **Labels (required):** every item carries a **type** label (`idea` or `bug`) and a **variant**
+  label (`variant:x86`, `variant:usb`, `variant:rpi4`, `variant:docs`, or `variant:tooling`), plus
+  `backlog` on entry. The issue forms set the type and capture the variant; running `/project audit`
+  in Claude Code finds any item missing a type or variant label and applies it.
 - **Reference logs** for bugs: paste from `scripts/logs.sh` (Variant A) or the device logs
   (Variant B). See the README "Logging" section.
 - **Commits/PRs** that resolve an item should reference it (`Closes #NN`) so the board card
