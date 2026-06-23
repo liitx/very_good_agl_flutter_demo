@@ -8,6 +8,9 @@ homescreen. Drive it interactively and resumably. The user may be doing this for
 
 ## How to run this command
 
+0. **Title this session.** Run `scripts/session-title.sh x86` so the terminal/session is
+   identifiable as the x86 setup, and tell the user they can run `/rename agl-x86` to name the
+   Claude session too.
 1. **Show progress and resume point.** Run:
    - `scripts/setup-state.sh status x86`
    - `scripts/setup-state.sh next x86`

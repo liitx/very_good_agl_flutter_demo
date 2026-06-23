@@ -1,4 +1,4 @@
-# vgv-agl-kernel-demo
+# very_good_agl_flutter_demo
 
 The AGL (Automotive Grade Linux) Flutter IVI homescreen, running on real hardware:
 a **Surface Pro 8** today and a **Raspberry Pi 4** next. This repo packages the app so
@@ -18,8 +18,8 @@ See [Set it up with Claude Code](#set-it-up-with-claude-code-recommended) below.
 **By hand:**
 
 ```bash
-git clone <your-fork-url> vgv-agl-kernel-demo
-cd vgv-agl-kernel-demo
+git clone <your-fork-url> very_good_agl_flutter_demo
+cd very_good_agl_flutter_demo
 ./scripts/bootstrap.sh     # one-time: installs build deps, checks Flutter
 ./scripts/build.sh         # build the Linux desktop bundle
 ./scripts/run.sh           # launch the IVI in a window, logs to logs/
@@ -55,8 +55,8 @@ setup. This repo ships guided, resumable slash commands for each variant.
 ### 1. Get Claude Code and open the repo
 
 ```bash
-git clone <your-fork-url> vgv-agl-kernel-demo
-cd vgv-agl-kernel-demo
+git clone <your-fork-url> very_good_agl_flutter_demo
+cd very_good_agl_flutter_demo
 claude                 # start Claude Code with THIS repo as the project
 ```
 

@@ -8,6 +8,7 @@
 #   scripts/setup-state.sh next <variant>          # print the first not-done step, or "complete"
 #   scripts/setup-state.sh done <variant> <step>   # mark a step done
 #   scripts/setup-state.sh todo <variant> <step>   # print "done" or "todo" for one step
+#   scripts/setup-state.sh active [variant]        # get, or set, the active setup variant (session intent)
 #   scripts/setup-state.sh reset <variant>         # clear a variant's progress
 #
 # Step order per variant is defined here so `status` and `next` are deterministic.
@@ -51,11 +52,21 @@ def show(variant):
     print(f"  -> next: {remaining[0] if remaining else 'complete'}")
 
 if cmd == "status":
+    active = state.get("_active")
+    if active:
+        print(f"active setup (session intent): {active}\n")
     if len(args) > 1:
         show(args[1])
     else:
         for v in STEPS:
             show(v)
+elif cmd == "active":
+    if len(args) > 1:
+        state["_active"] = args[1]
+        save()
+        print(f"active = {args[1]}")
+    else:
+        print(state.get("_active", "none"))
 elif cmd == "next":
     variant = args[1]
     done = state.get(variant, {})

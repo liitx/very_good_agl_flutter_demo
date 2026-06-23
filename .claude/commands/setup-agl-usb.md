@@ -17,6 +17,8 @@ IVI as the system UI and native Surface input.
 
 ## How to run this command
 
+0. **Title this session.** Run `scripts/session-title.sh usb` so the terminal/session is
+   identifiable as the USB appliance setup, and tell the user they can run `/rename agl-usb`.
 1. **Read the project's own status first.** This variant is driven by the broader project's
    runbook, not just this repo. Read `/home/aksanabuster/agl/STATUS.md` in full. It records
    the current state and which Phase-2 steps are already DONE. Cross-check with

@@ -9,6 +9,8 @@ actually runs on the Pi), and the full AGL OS image for the Pi (documented, not 
 
 ## How to run this command
 
+0. **Title this session.** Run `scripts/session-title.sh rpi4` so the terminal/session is
+   identifiable as the Pi 4 setup, and tell the user they can run `/rename agl-rpi4`.
 1. Run `scripts/setup-state.sh status rpi4` and `scripts/setup-state.sh next rpi4`. Show the
    checklist and resume point. If the argument is `reset`, run `scripts/setup-state.sh reset rpi4` first.
 2. Do not-done steps in order; after each success run `scripts/setup-state.sh done rpi4 <step>`.
