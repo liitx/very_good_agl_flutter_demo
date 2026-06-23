@@ -1,0 +1,47 @@
+name: 💡 Idea or feature request
+description: Suggest something for the AGL Flutter demo. New ideas start in the Backlog lane.
+title: "[idea] "
+labels: ["idea", "backlog"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the idea. When you submit, it is labeled `idea` + `backlog` and lands in the
+        **Backlog** lane of the [project board](https://github.com/liitx/very_good_agl_flutter_demo/projects),
+        then moves across Ready → Analysis → In progress as it gets picked up.
+  - type: textarea
+    id: idea
+    attributes:
+      label: What's the idea?
+      description: A clear, concise description of what you want.
+      placeholder: e.g. Add a landscape-reflow layout for the dashboard on wide screens.
+    validations:
+      required: true
+  - type: dropdown
+    id: variant
+    attributes:
+      label: Which variant(s) does it touch?
+      multiple: true
+      options:
+        - x86 windowed app (Variant A)
+        - Surface USB appliance (Variant B)
+        - Raspberry Pi 4 (Variant C)
+        - Docs
+        - Tooling / setup
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why is it useful?
+      placeholder: What does this unlock or improve?
+  - type: textarea
+    id: done
+    attributes:
+      label: What would "done" look like?
+      description: Acceptance criteria, if you have any.
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Links, mockups, constraints, related issues.

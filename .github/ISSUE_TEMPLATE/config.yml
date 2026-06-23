@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 📋 Project board (view progress)
+    url: https://github.com/liitx/very_good_agl_flutter_demo/projects
+    about: See where everything is across Backlog → Ready → Analysis → In progress → Blockers → Done.
+  - name: 📖 How to add an item (conventions)
+    url: https://github.com/liitx/very_good_agl_flutter_demo/blob/master/CONTRIBUTING.md
+    about: The conventional flow for adding and moving items on the board.

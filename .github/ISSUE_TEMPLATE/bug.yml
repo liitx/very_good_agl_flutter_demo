@@ -1,0 +1,38 @@
+name: 🐛 Bug report
+description: Something doesn't work as documented. Lands in the Backlog lane for triage.
+title: "[bug] "
+labels: ["bug", "backlog"]
+body:
+  - type: dropdown
+    id: variant
+    attributes:
+      label: Which variant?
+      options:
+        - x86 windowed app (Variant A)
+        - Surface USB appliance (Variant B)
+        - Raspberry Pi 4 (Variant C)
+        - Tooling / setup
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you expected vs what actually happened.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. scripts/...
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Paste from `scripts/logs.sh` (Variant A) or the device logs (Variant B).
+      render: text
